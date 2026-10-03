@@ -1,0 +1,37 @@
+{
+  "name": "ai-career-platform",
+  "version": "1.0.0",
+  "description": "AI-powered Career & Interview Preparation Platform",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "services/*"
+  ],
+  "scripts": {
+    "start": "node scripts/dev-all.js",
+    "dev": "node scripts/dev-all.js",
+    "dev:docker": "docker compose up",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:gateway": "cd services/api-gateway && npm run dev",
+    "dev:user": "cd services/user-service && npm run dev",
+    "dev:resume": "cd services/resume-service && npm run dev",
+    "dev:interview": "cd services/interview-service && npm run dev",
+    "dev:ai": "cd services/ai-service && npm run dev",
+    "dev:feedback": "cd services/feedback-service && npm run dev",
+    "dev:roadmap": "cd services/roadmap-service && npm run dev",
+    "install:all": "npm install && cd frontend && npm install && cd ../services/api-gateway && npm install && cd ../user-service && npm install && cd ../resume-service && npm install && cd ../interview-service && npm install && cd ../ai-service && npm install && cd ../feedback-service && npm install && cd ../roadmap-service && npm install",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "keywords": [
+    "ai",
+    "career",
+    "interview",
+    "resume",
+    "langchain",
+    "langgraph"
+  ],
+  "author": "AI Career Platform",
+  "license": "MIT"
+}

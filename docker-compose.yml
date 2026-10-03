@@ -1,0 +1,195 @@
+version: '3.8'
+
+services:
+  # ─── Infrastructure ────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7.0
+    container_name: prepai-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - prepai-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: prepai-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - prepai-network
+
+  # ─── API Gateway ───────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: prepai-gateway
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      - API_GATEWAY_PORT=5000
+      - USER_SERVICE_URL=http://user-service:5001
+      - RESUME_SERVICE_URL=http://resume-service:5002
+      - INTERVIEW_SERVICE_URL=http://interview-service:5003
+      - AI_SERVICE_URL=http://ai-service:5004
+      - FEEDBACK_SERVICE_URL=http://feedback-service:5005
+      - ROADMAP_SERVICE_URL=http://roadmap-service:5006
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+    depends_on:
+      - user-service
+      - resume-service
+      - interview-service
+      - ai-service
+      - feedback-service
+      - roadmap-service
+    networks:
+      - prepai-network
+
+  # ─── User Service ──────────────────────────────────────────────────────────
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: prepai-user-service
+    restart: unless-stopped
+    ports:
+      - '5001:5001'
+    environment:
+      - USER_SERVICE_PORT=5001
+      - MONGODB_URI=mongodb://mongo:27017/ai_career_platform
+    depends_on:
+      - mongo
+    networks:
+      - prepai-network
+
+  # ─── Resume Service ────────────────────────────────────────────────────────
+  resume-service:
+    build:
+      context: ./services/resume-service
+      dockerfile: Dockerfile
+    container_name: prepai-resume-service
+    restart: unless-stopped
+    ports:
+      - '5002:5002'
+    environment:
+      - RESUME_SERVICE_PORT=5002
+      - MONGODB_URI=mongodb://mongo:27017/ai_career_platform
+      - AI_SERVICE_URL=http://ai-service:5004
+      - USER_SERVICE_URL=http://user-service:5001
+    depends_on:
+      - mongo
+      - ai-service
+    networks:
+      - prepai-network
+
+  # ─── Interview Service ─────────────────────────────────────────────────────
+  interview-service:
+    build:
+      context: ./services/interview-service
+      dockerfile: Dockerfile
+    container_name: prepai-interview-service
+    restart: unless-stopped
+    ports:
+      - '5003:5003'
+    environment:
+      - INTERVIEW_SERVICE_PORT=5003
+      - MONGODB_URI=mongodb://mongo:27017/ai_career_platform
+      - REDIS_URL=redis://redis:6379
+      - AI_SERVICE_URL=http://ai-service:5004
+    depends_on:
+      - mongo
+      - redis
+      - ai-service
+    networks:
+      - prepai-network
+
+  # ─── AI Service ────────────────────────────────────────────────────────────
+  ai-service:
+    build:
+      context: ./services/ai-service
+      dockerfile: Dockerfile
+    container_name: prepai-ai-service
+    restart: unless-stopped
+    ports:
+      - '5004:5004'
+    environment:
+      - AI_SERVICE_PORT=5004
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_MODEL=${AI_MODEL:-gpt-4o-mini}
+      - AI_BASE_URL=${AI_BASE_URL:-https://api.openai.com/v1}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - prepai-network
+
+  # ─── Feedback Service ──────────────────────────────────────────────────────
+  feedback-service:
+    build:
+      context: ./services/feedback-service
+      dockerfile: Dockerfile
+    container_name: prepai-feedback-service
+    restart: unless-stopped
+    ports:
+      - '5005:5005'
+    environment:
+      - FEEDBACK_SERVICE_PORT=5005
+      - MONGODB_URI=mongodb://mongo:27017/ai_career_platform
+      - AI_SERVICE_URL=http://ai-service:5004
+    depends_on:
+      - mongo
+      - ai-service
+    networks:
+      - prepai-network
+
+  # ─── Roadmap Service ───────────────────────────────────────────────────────
+  roadmap-service:
+    build:
+      context: ./services/roadmap-service
+      dockerfile: Dockerfile
+    container_name: prepai-roadmap-service
+    restart: unless-stopped
+    ports:
+      - '5006:5006'
+    environment:
+      - ROADMAP_SERVICE_PORT=5006
+      - MONGODB_URI=mongodb://mongo:27017/ai_career_platform
+      - AI_SERVICE_URL=http://ai-service:5004
+    depends_on:
+      - mongo
+      - ai-service
+    networks:
+      - prepai-network
+
+  # ─── Frontend ──────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prepai-frontend
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    depends_on:
+      - api-gateway
+    networks:
+      - prepai-network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  prepai-network:
+    driver: bridge

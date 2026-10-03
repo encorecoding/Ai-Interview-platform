@@ -1,0 +1,98 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#f0f4ff',
+          100: '#e0e9ff',
+          200: '#c7d7fe',
+          300: '#a5bafb',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81',
+          950: '#1e1b4b',
+        },
+        accent: {
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed',
+        },
+        cyan: {
+          400: '#22d3ee',
+          500: '#06b6d4',
+          600: '#0891b2',
+        },
+        surface: {
+          950: '#040407',
+          900: '#07070d',
+          850: '#0a0a14',
+          800: '#0e0e1a',
+          750: '#131322',
+          700: '#18182c',
+          600: '#1f1f38',
+          500: '#282846',
+          400: '#333357',
+          300: '#42426e',
+        }
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'Fira Code', 'monospace'],
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in-right': 'slideInRight 0.3s ease-out',
+        'pulse-slow': 'pulse 4s infinite',
+        'glow': 'glow 2.5s ease-in-out infinite alternate',
+        'float': 'float 6s ease-in-out infinite',
+        'float-slow': 'floatSlow 12s ease-in-out infinite',
+        'orb-1': 'orbMove1 22s ease-in-out infinite alternate',
+        'orb-2': 'orbMove2 26s ease-in-out infinite alternate',
+        'orb-3': 'orbMove3 20s ease-in-out infinite alternate',
+        'shimmer': 'shimmer 2.5s infinite',
+        'spin-slow': 'spin 12s linear infinite',
+      },
+      keyframes: {
+        fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+        slideUp: { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        slideInRight: { from: { opacity: '0', transform: 'translateX(20px)' }, to: { opacity: '1', transform: 'translateX(0)' } },
+        glow: { from: { boxShadow: '0 0 20px rgba(99,102,241,0.25)' }, to: { boxShadow: '0 0 45px rgba(139,92,246,0.5)' } },
+        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+        floatSlow: { '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' }, '50%': { transform: 'translateY(-16px) rotate(3deg)' } },
+        orbMove1: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '50%': { transform: 'translate(80px, 40px) scale(1.15)' }, '100%': { transform: 'translate(-40px, 60px) scale(0.95)' } },
+        orbMove2: { '0%': { transform: 'translate(0px, 0px) scale(1)' }, '50%': { transform: 'translate(-70px, -50px) scale(1.1)' }, '100%': { transform: 'translate(50px, -20px) scale(1.05)' } },
+        orbMove3: { '0%': { transform: 'translate(0px, 0px) scale(1.05)' }, '50%': { transform: 'translate(40px, -60px) scale(0.9)' }, '100%': { transform: 'translate(-60px, 30px) scale(1.1)' } },
+        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'subtle-grid': 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+      },
+      backdropBlur: {
+        xs: '2px',
+        xl: '20px',
+        '2xl': '32px',
+      },
+      boxShadow: {
+        'glow-sm': '0 0 15px rgba(99,102,241,0.25)',
+        'glow-md': '0 0 30px rgba(99,102,241,0.35)',
+        'glow-lg': '0 0 60px rgba(139,92,246,0.45)',
+        'glow-cyan': '0 0 30px rgba(6,182,212,0.35)',
+        'glass': '0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)',
+        'glass-hover': '0 24px 60px rgba(0,0,0,0.45), 0 0 25px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.12)',
+        'card': '0 4px 24px rgba(0,0,0,0.4)',
+      },
+    },
+  },
+  plugins: [],
+}
